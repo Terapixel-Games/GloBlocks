@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MonetizationConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/glo_blocks/MonetizationConfig.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+ad_enabled = false
+interstitial_every_n_runs = 3
+rewarded_continue_limit_per_run = 0
+rewarded_score_multiplier = 1.0
+app_id = ""
+interstitial_unit_id = ""
+rewarded_unit_id = ""
+local_override_path = "res://configs/ads/AdUnits.local.json"

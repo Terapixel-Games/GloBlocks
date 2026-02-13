@@ -1,0 +1,4 @@
+.godot/
+.import/
+build/
+configs/ads/AdUnits.local.json

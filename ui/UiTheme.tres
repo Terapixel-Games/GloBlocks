@@ -1,0 +1,114 @@
+[gd_resource type="Theme" load_steps=8 format=3]
+
+[ext_resource type="FontFile" path="res://assets/fonts/SpaceGrotesk.ttf" id="1"]
+[ext_resource type="FontFile" path="res://assets/fonts/Chivo.ttf" id="2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+bg_color = Color(0.03, 0.08, 0.17, 0.78)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.95, 0.99, 1, 0.6)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0.04, 0.09, 0.42)
+anti_aliasing_size = 1.2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+bg_color = Color(0.02, 0.05, 0.11, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.86, 0.95, 1, 0.42)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0.02, 0.08, 0.4)
+anti_aliasing_size = 1.2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
+bg_color = Color(0.04, 0.09, 0.18, 0.82)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.86, 0.94, 1, 0.55)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0, 0, 0.45)
+anti_aliasing_size = 1.2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_option_normal"]
+bg_color = Color(0.03, 0.08, 0.16, 0.74)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.86, 0.95, 1, 0.44)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+anti_aliasing_size = 1.2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.04, 0.08, 0.16, 0.54)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.92, 1, 0.3)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+shadow_color = Color(0, 0.01, 0.08, 0.4)
+shadow_size = 8
+anti_aliasing_size = 1.2
+
+[resource]
+default_font = ExtResource("1")
+default_font_size = 36
+Button/colors/font_color = Color(0.97, 0.99, 1, 1)
+Button/colors/font_focus_color = Color(0.97, 0.99, 1, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0.01, 0.03, 0.08, 0.92)
+Button/colors/font_pressed_color = Color(0.96, 0.98, 1, 1)
+Button/constants/h_separation = 10
+Button/constants/minimum_character_width = 5
+Button/constants/outline_size = 3
+Button/font_sizes/font_size = 38
+Button/fonts/font = ExtResource("2")
+Button/styles/focus = SubResource("StyleBoxFlat_btn_hover")
+Button/styles/hover = SubResource("StyleBoxFlat_btn_hover")
+Button/styles/normal = SubResource("StyleBoxFlat_btn_normal")
+Button/styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+Label/colors/font_color = Color(0.98, 0.99, 1, 1)
+Label/colors/font_outline_color = Color(0.01, 0.03, 0.08, 0.9)
+Label/constants/outline_size = 5
+OptionButton/colors/font_color = Color(0.97, 0.99, 1, 1)
+OptionButton/colors/font_focus_color = Color(1, 1, 1, 1)
+OptionButton/colors/font_hover_color = Color(1, 1, 1, 1)
+OptionButton/colors/font_outline_color = Color(0.01, 0.03, 0.08, 0.9)
+OptionButton/constants/outline_size = 3
+OptionButton/font_sizes/font_size = 34
+OptionButton/fonts/font = ExtResource("2")
+OptionButton/styles/focus = SubResource("StyleBoxFlat_btn_hover")
+OptionButton/styles/hover = SubResource("StyleBoxFlat_btn_hover")
+OptionButton/styles/normal = SubResource("StyleBoxFlat_option_normal")
+OptionButton/styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_panel")
+PopupMenu/colors/font_color = Color(0.92, 0.97, 1, 1)
+PopupMenu/colors/font_disabled_color = Color(0.58, 0.63, 0.72, 0.8)
+PopupMenu/colors/font_hover_color = Color(1, 1, 1, 1)
+PopupMenu/font_sizes/font_size = 32
+PopupMenu/fonts/font = ExtResource("2")
+PopupMenu/styles/hover = SubResource("StyleBoxFlat_btn_hover")
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_option_normal")
