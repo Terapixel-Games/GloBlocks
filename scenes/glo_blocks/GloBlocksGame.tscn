@@ -1,34 +1,35 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=9 format=3 uid="uid://cphxqqapmeacq"]
 
-[ext_resource type="Script" path="res://scripts/glo_blocks/GloBlocksGame.gd" id="1"]
+[ext_resource type="Script" uid="uid://uu8tro3wtpvi" path="res://scripts/glo_blocks/GloBlocksGame.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/glo_blocks/BackgroundController.tscn" id="2"]
-[ext_resource type="Script" path="res://scripts/glo_blocks/BlockGrid.gd" id="3"]
+[ext_resource type="Script" uid="uid://b15r0yfkw4r3o" path="res://scripts/glo_blocks/BlockGrid.gd" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/glo_blocks/Paddle.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/glo_blocks/Ball.tscn" id="5"]
-[ext_resource type="Theme" path="res://ui/UiTheme.tres" id="6"]
-[ext_resource type="Script" path="res://scripts/glo_blocks/GameOverOverlay.gd" id="7"]
-[ext_resource type="Script" path="res://scripts/glo_blocks/GlassPanel.gd" id="8"]
+[ext_resource type="Theme" uid="uid://cnuvxibq8boq2" path="res://ui/UiTheme.tres" id="6"]
+[ext_resource type="Script" uid="uid://bw6wytx7am2d8" path="res://scripts/glo_blocks/GameOverOverlay.gd" id="7"]
+[ext_resource type="Script" uid="uid://byssp4nqa070i" path="res://scripts/glo_blocks/GlassPanel.gd" id="8"]
 
 [node name="GloBlocksGame" type="Node2D"]
 script = ExtResource("1")
 
 [node name="BackgroundController" parent="." instance=ExtResource("2")]
+fx_overlay_alpha = 1.0
 
 [node name="PlayfieldRig" type="Node2D" parent="."]
 
 [node name="Playfield" type="Node2D" parent="PlayfieldRig"]
 
 [node name="PlayfieldGlow" type="ColorRect" parent="PlayfieldRig/Playfield"]
-color = Color(0.48, 0.74, 1, 0.08)
 mouse_filter = 2
+color = Color(0.48, 0.74, 1, 0.08)
 
 [node name="PlayfieldFrame" type="ColorRect" parent="PlayfieldRig/Playfield"]
-color = Color(0.18, 0.28, 0.52, 0.22)
 mouse_filter = 2
+color = Color(0.18, 0.28, 0.52, 0.22)
 
 [node name="ComboGlow" type="ColorRect" parent="PlayfieldRig/Playfield"]
-color = Color(0.68, 0.84, 1, 0)
 mouse_filter = 2
+color = Color(0.68, 0.84, 1, 0)
 
 [node name="BlockGrid" type="Node2D" parent="PlayfieldRig/Playfield"]
 script = ExtResource("3")
@@ -41,15 +42,17 @@ script = ExtResource("3")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
-[node name="TopRow" type="HBoxContainer" parent="HUD"]
-anchors_preset = 10
+[node name="TopRow" type="GridContainer" parent="HUD"]
+anchors_preset = -1
 anchor_left = 0.05
 anchor_top = 0.02
 anchor_right = 0.95
 anchor_bottom = 0.12
 grow_horizontal = 2
 theme = ExtResource("6")
-theme_override_constants/separation = 24
+columns = 2
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 12
 
 [node name="ScoreBox" type="VBoxContainer" parent="HUD/TopRow"]
 layout_mode = 2
@@ -94,52 +97,56 @@ script = ExtResource("7")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0, 0, 0, 0.52)
+color = Color(0, 0, 0, 0.12)
 
 [node name="Panel" type="ColorRect" parent="GameOverOverlay"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.22
-anchor_top = 0.31
-anchor_right = 0.78
-anchor_bottom = 0.69
+anchors_preset = -1
+anchor_left = 0.18
+anchor_top = 0.12
+anchor_right = 0.82
+anchor_bottom = 0.29
 grow_horizontal = 2
 grow_vertical = 2
+color = Color(0.08, 0.14, 0.27, 0.28)
 script = ExtResource("8")
 blur_radius = 6.0
-tint = Color(0.08, 0.14, 0.27, 0.38)
-edge = Color(0.93, 0.97, 1, 0.26)
+tint = Color(0.08, 0.14, 0.27, 0.28)
+edge = Color(0.93, 0.97, 1, 0.32)
 corner_radius = 0.11
 edge_width = 1.05
 warp_intensity = 0.1
 chromatic_strength = 0.2
-color = Color(0.08, 0.14, 0.27, 0.38)
 
 [node name="VBox" type="VBoxContainer" parent="GameOverOverlay/Panel"]
 layout_mode = 0
 anchor_left = 0.1
-anchor_top = 0.12
+anchor_top = 0.1
 anchor_right = 0.9
-anchor_bottom = 0.88
-theme_override_constants/separation = 16
+anchor_bottom = 0.9
+theme_override_constants/separation = 10
 alignment = 1
 
 [node name="Title" type="Label" parent="GameOverOverlay/Panel/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Run Over"
 horizontal_alignment = 1
 
 [node name="Score" type="Label" parent="GameOverOverlay/Panel/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "0"
 horizontal_alignment = 1
 
 [node name="Best" type="Label" parent="GameOverOverlay/Panel/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Best 0"
 horizontal_alignment = 1
 
 [node name="Retry" type="Label" parent="GameOverOverlay/Panel/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Tap to Retry"
 horizontal_alignment = 1

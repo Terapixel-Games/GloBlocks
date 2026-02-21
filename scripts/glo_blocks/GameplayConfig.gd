@@ -1,6 +1,11 @@
 extends Resource
 class_name GameplayConfig
 
+enum PlayfieldLayoutMode {
+	SQUARE_CENTERED,
+	ROTATE_TO_LANDSCAPE
+}
+
 @export var base_ball_speed: float = 920.0
 @export var max_speed_cap: float = 1680.0
 @export var speed_increase_interval_seconds: float = 7.5
@@ -47,6 +52,15 @@ class_name GameplayConfig
 @export var playfield_bottom_margin: float = 120.0
 @export var playfield_min_width: float = 320.0
 @export var playfield_min_height: float = 420.0
+@export var playfield_layout_mode: PlayfieldLayoutMode = PlayfieldLayoutMode.SQUARE_CENTERED
+@export var layout_reference_size: Vector2 = Vector2(1010.0, 1010.0)
+@export var side_hud_trigger_aspect: float = 1.25
+@export var side_hud_width: float = 260.0
+@export var side_hud_width_ratio: float = 0.24
+@export var side_hud_left_margin: float = 24.0
+@export var side_hud_top_margin: float = 24.0
+@export var paddle_bottom_padding_ratio: float = 0.06
+@export var paddle_bottom_padding_min: float = 12.0
 @export var wall_thickness: float = 22.0
 
 @export var physics_substep_radius_factor: float = 0.5

@@ -9,15 +9,21 @@ var _play_bounds: Rect2
 var _target_x: float = 0.0
 var _drag_active: bool = false
 var _touch_index: int = -1
+var _scale: float = 1.0
+var _paddle_width: float = 0.0
+var _paddle_height: float = 0.0
 var _half_width: float = 0.0
 
 func _ready() -> void:
 	_setup_visual_materials()
 
-func configure(config: GameplayConfig, play_bounds: Rect2) -> void:
+func configure(config: GameplayConfig, play_bounds: Rect2, play_scale: float = 1.0) -> void:
 	_config = config
 	_play_bounds = play_bounds
-	_half_width = _config.paddle_width * 0.5
+	_scale = max(0.3, play_scale)
+	_paddle_width = _config.paddle_width * _scale
+	_paddle_height = _config.paddle_height * _scale
+	_half_width = _paddle_width * 0.5
 	_target_x = global_position.x
 	_update_visual_size()
 	global_position.x = _clamp_x(global_position.x)
@@ -63,8 +69,8 @@ func _process(delta: float) -> void:
 
 func get_collision_rect() -> Rect2:
 	return Rect2(
-		Vector2(global_position.x - _half_width, global_position.y - (_config.paddle_height * 0.5)),
-		Vector2(_config.paddle_width, _config.paddle_height)
+		Vector2(global_position.x - _half_width, global_position.y - (_paddle_height * 0.5)),
+		Vector2(_paddle_width, _paddle_height)
 	)
 
 func _clamp_x(value: float) -> float:
@@ -75,10 +81,10 @@ func _clamp_x(value: float) -> float:
 func _update_visual_size() -> void:
 	if _config == null:
 		return
-	visual.size = Vector2(_config.paddle_width, _config.paddle_height)
-	visual.position = Vector2(-_config.paddle_width * 0.5, -_config.paddle_height * 0.5)
+	visual.size = Vector2(_paddle_width, _paddle_height)
+	visual.position = Vector2(-_paddle_width * 0.5, -_paddle_height * 0.5)
 	visual.pivot_offset = visual.size * 0.5
-	glow.size = Vector2(_config.paddle_width + 28.0, _config.paddle_height + 24.0)
+	glow.size = Vector2(_paddle_width + (28.0 * _scale), _paddle_height + (24.0 * _scale))
 	glow.position = Vector2(-glow.size.x * 0.5, -glow.size.y * 0.5)
 	glow.pivot_offset = glow.size * 0.5
 

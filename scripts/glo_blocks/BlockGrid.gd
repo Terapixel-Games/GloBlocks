@@ -4,6 +4,8 @@ class_name BlockGrid
 signal block_hit(previous_tier: int, new_tier: int, destroyed: bool, hit_position: Vector2, tint: Color)
 
 const BLOCK_SCENE := preload("res://scenes/glo_blocks/Block.tscn")
+const GRID_TOP_PADDING_RATIO: float = 0.06
+const GRID_TOP_PADDING_MIN: float = 14.0
 
 var _config: GameplayConfig
 var _pattern_config: PatternConfig
@@ -153,11 +155,13 @@ func _rebuild_layout_metrics() -> void:
 		_layout_block_size = _config.block_size * fit_scale
 		_layout_spacing = _config.spacing * fit_scale
 	var layout_size: Vector2 = _grid_total_size(_layout_block_size, _layout_spacing)
-	var desired_origin: Vector2 = _play_bounds.position + _config.grid_origin
+	var centered_x: float = _play_bounds.position.x + ((_play_bounds.size.x - layout_size.x) * 0.5)
+	var top_padding: float = max(GRID_TOP_PADDING_MIN, _play_bounds.size.y * GRID_TOP_PADDING_RATIO)
+	var desired_y: float = _play_bounds.position.y + top_padding
 	var max_x: float = _play_bounds.position.x + _play_bounds.size.x - layout_size.x
 	var max_y: float = _play_bounds.position.y + _play_bounds.size.y - layout_size.y
-	var clamped_x: float = clamp(desired_origin.x, _play_bounds.position.x, max(_play_bounds.position.x, max_x))
-	var clamped_y: float = clamp(desired_origin.y, _play_bounds.position.y, max(_play_bounds.position.y, max_y))
+	var clamped_x: float = clamp(centered_x, _play_bounds.position.x, max(_play_bounds.position.x, max_x))
+	var clamped_y: float = clamp(desired_y, _play_bounds.position.y, max(_play_bounds.position.y, max_y))
 	_layout_origin = Vector2(clamped_x, clamped_y)
 
 func _grid_total_size(block_size: Vector2, spacing: Vector2) -> Vector2:

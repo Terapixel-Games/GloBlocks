@@ -1,6 +1,7 @@
 extends Node2D
 
 const SHARD_PARTICLES_SCENE := preload("res://fx/ShardParticles.tscn")
+const PLAY_LAYOUT_SYSTEM := preload("res://scripts/glo_blocks/layout/PlayLayoutSystem.gd")
 
 @export var gameplay_config: GameplayConfig = preload("res://resources/glo_blocks/config/GameplayConfig.tres")
 @export var pattern_config: PatternConfig = preload("res://resources/glo_blocks/config/PatternConfig.tres")
@@ -16,8 +17,11 @@ const SHARD_PARTICLES_SCENE := preload("res://fx/ShardParticles.tscn")
 @onready var playfield_frame: ColorRect = $PlayfieldRig/Playfield/PlayfieldFrame
 @onready var combo_glow: ColorRect = $PlayfieldRig/Playfield/ComboGlow
 
+@onready var score_caption: Label = $HUD/TopRow/ScoreBox/Caption
 @onready var score_value: Label = $HUD/TopRow/ScoreBox/Value
+@onready var best_caption: Label = $HUD/TopRow/BestBox/Caption
 @onready var best_value: Label = $HUD/TopRow/BestBox/Value
+@onready var hud_top_row: GridContainer = $HUD/TopRow
 @onready var game_over_overlay: GameOverOverlay = $GameOverOverlay
 
 var _combo_manager: ComboManager
@@ -29,6 +33,10 @@ var _hit_freeze_active: bool = false
 var _shake_time_left: float = 0.0
 var _shake_strength: float = 0.0
 var _hit_freeze_timer: Timer
+var _play_scale: float = 1.0
+var _playfield_rig_base_position: Vector2 = Vector2.ZERO
+var _playfield_rig_base_rotation: float = 0.0
+var _playfield_rig_base_scale: Vector2 = Vector2.ONE
 
 func _ready() -> void:
 	_rng.randomize()
@@ -88,7 +96,8 @@ func _start_run() -> void:
 	_restore_time_scale()
 	_run_active = true
 	_shake_time_left = 0.0
-	playfield_rig.position = Vector2.ZERO
+	_sync_playfield_rig_transform(Vector2.ZERO)
+	hud_top_row.visible = true
 	game_over_overlay.hide_overlay()
 	_score_manager.reset_run()
 	_combo_manager.reset()
@@ -98,34 +107,85 @@ func _start_run() -> void:
 
 func _layout_scene(rebuild_grid: bool) -> void:
 	var viewport_size: Vector2 = get_viewport_rect().size
-	var width: float = max(gameplay_config.playfield_min_width, viewport_size.x - (gameplay_config.playfield_margin_x * 2.0))
-	var height: float = max(gameplay_config.playfield_min_height, viewport_size.y - gameplay_config.playfield_top - gameplay_config.playfield_bottom_margin)
-	_play_bounds = Rect2(
-		Vector2(gameplay_config.playfield_margin_x, gameplay_config.playfield_top),
-		Vector2(width, height)
+	var use_side_hud: bool = PLAY_LAYOUT_SYSTEM.should_use_side_hud(viewport_size, gameplay_config.side_hud_trigger_aspect)
+	_layout_hud(viewport_size, use_side_hud)
+	var layout: Dictionary = PLAY_LAYOUT_SYSTEM.compute_layout(
+		viewport_size,
+		gameplay_config.playfield_layout_mode,
+		gameplay_config.layout_reference_size,
+		gameplay_config.playfield_margin_x,
+		Vector2(gameplay_config.playfield_min_width, gameplay_config.playfield_min_height)
 	)
+	_play_bounds = layout.get("play_bounds", Rect2())
+	_play_scale = float(layout.get("play_scale", 1.0))
+	_playfield_rig_base_position = layout.get("rig_position", Vector2.ZERO)
+	_playfield_rig_base_rotation = float(layout.get("rig_rotation", 0.0))
+	_playfield_rig_base_scale = layout.get("rig_scale", Vector2.ONE)
+	_sync_playfield_rig_transform(Vector2.ZERO)
 
 	block_grid.configure(gameplay_config, pattern_config, _play_bounds)
 	if rebuild_grid:
 		block_grid.rebuild_grid()
+	var grid_rect: Rect2 = block_grid.get_grid_rect()
 
-	paddle.configure(gameplay_config, _play_bounds)
-	paddle.set_paddle_y(_play_bounds.position.y + _play_bounds.size.y - gameplay_config.paddle_y_offset)
+	paddle.configure(gameplay_config, _play_bounds, _play_scale)
+	var paddle_half_height: float = gameplay_config.paddle_height * _play_scale * 0.5
+	var paddle_bottom_padding: float = max(
+		gameplay_config.paddle_bottom_padding_min,
+		_play_bounds.size.y * gameplay_config.paddle_bottom_padding_ratio
+	)
+	var desired_paddle_y: float = _play_bounds.position.y + _play_bounds.size.y - paddle_bottom_padding - paddle_half_height
+	var min_paddle_y: float = _play_bounds.position.y + paddle_half_height
+	var max_paddle_y: float = _play_bounds.position.y + _play_bounds.size.y - paddle_half_height
+	paddle.set_paddle_y(clamp(desired_paddle_y, min_paddle_y, max_paddle_y))
 	paddle.force_centered(_play_bounds.get_center().x)
 
-	ball.configure(gameplay_config, _play_bounds, paddle, block_grid)
-
-	var grid_rect: Rect2 = block_grid.get_grid_rect()
+	ball.configure(gameplay_config, _play_bounds, paddle, block_grid, _play_scale)
 	_apply_playfield_decor(grid_rect)
 
+func _layout_hud(viewport_size: Vector2, use_side_hud: bool) -> void:
+	if use_side_hud:
+		var side_hud_width: float = min(gameplay_config.side_hud_width, viewport_size.x * gameplay_config.side_hud_width_ratio)
+		hud_top_row.columns = 1
+		hud_top_row.anchor_left = 0.0
+		hud_top_row.anchor_top = 0.0
+		hud_top_row.anchor_right = 0.0
+		hud_top_row.anchor_bottom = 0.0
+		hud_top_row.offset_left = gameplay_config.side_hud_left_margin
+		hud_top_row.offset_top = gameplay_config.side_hud_top_margin
+		hud_top_row.offset_right = gameplay_config.side_hud_left_margin + side_hud_width
+		hud_top_row.offset_bottom = gameplay_config.side_hud_top_margin + min(320.0, viewport_size.y * 0.5)
+		hud_top_row.add_theme_constant_override("h_separation", 0)
+		hud_top_row.add_theme_constant_override("v_separation", 14)
+		score_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		score_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		best_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		best_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		return
+	hud_top_row.columns = 2
+	hud_top_row.anchor_left = 0.05
+	hud_top_row.anchor_top = 0.02
+	hud_top_row.anchor_right = 0.95
+	hud_top_row.anchor_bottom = 0.12
+	hud_top_row.offset_left = 0.0
+	hud_top_row.offset_top = 0.0
+	hud_top_row.offset_right = 0.0
+	hud_top_row.offset_bottom = 0.0
+	hud_top_row.add_theme_constant_override("h_separation", 24)
+	hud_top_row.add_theme_constant_override("v_separation", 12)
+	score_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	score_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	best_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	best_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
 func _spawn_ball() -> void:
-	var spawn_position: Vector2 = paddle.global_position + Vector2(0.0, -gameplay_config.ball_spawn_offset)
+	var spawn_position: Vector2 = paddle.global_position + Vector2(0.0, -(gameplay_config.ball_spawn_offset * _play_scale))
 	ball.reset_ball(spawn_position)
 
 func _apply_playfield_decor(grid_rect: Rect2) -> void:
-	var glow_padding: float = gameplay_config.playfield_glow_padding
-	var frame_padding: float = gameplay_config.playfield_frame_padding
-	var combo_padding: float = gameplay_config.combo_glow_padding
+	var glow_padding: float = gameplay_config.playfield_glow_padding * _play_scale
+	var frame_padding: float = gameplay_config.playfield_frame_padding * _play_scale
+	var combo_padding: float = gameplay_config.combo_glow_padding * _play_scale
 	playfield_glow.position = grid_rect.position - Vector2(glow_padding, glow_padding)
 	playfield_glow.size = grid_rect.size + Vector2(glow_padding * 2.0, glow_padding * 2.0)
 	playfield_glow.color = Color(0.48, 0.74, 1.0, 0.08)
@@ -169,6 +229,7 @@ func _end_run() -> void:
 	ball.stop_ball()
 	_restore_time_scale()
 	_score_manager.finalize_run()
+	hud_top_row.visible = false
 	game_over_overlay.show_results(_score_manager.score, _score_manager.best)
 	AdManager.on_run_finished()
 
@@ -218,12 +279,17 @@ func _request_screen_shake(strength: float) -> void:
 
 func _update_screen_shake(delta: float) -> void:
 	if _shake_time_left <= 0.0:
-		if playfield_rig.position != Vector2.ZERO:
-			playfield_rig.position = Vector2.ZERO
+		if playfield_rig.position != _playfield_rig_base_position:
+			_sync_playfield_rig_transform(Vector2.ZERO)
 		return
 	_shake_time_left = max(0.0, _shake_time_left - delta)
 	var t: float = _shake_time_left / max(0.001, gameplay_config.screen_shake_duration)
 	var amp: float = _shake_strength * t
-	playfield_rig.position = Vector2(_rng.randf_range(-amp, amp), _rng.randf_range(-amp, amp))
+	_sync_playfield_rig_transform(Vector2(_rng.randf_range(-amp, amp), _rng.randf_range(-amp, amp)))
 	if _shake_time_left <= 0.0:
 		_shake_strength = 0.0
+
+func _sync_playfield_rig_transform(shake_offset: Vector2) -> void:
+	playfield_rig.rotation = _playfield_rig_base_rotation
+	playfield_rig.scale = _playfield_rig_base_scale
+	playfield_rig.position = _playfield_rig_base_position + shake_offset

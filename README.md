@@ -17,10 +17,19 @@ Primary gameplay knobs live in `resources/glo_blocks/config/GameplayConfig.tres`
 - `screen_shake_strength`, `screen_shake_duration`
 - `playfield_margin_x`, `playfield_top`, `playfield_bottom_margin`
 - `playfield_min_width`, `playfield_min_height`
+- `playfield_layout_mode`, `layout_reference_size`
+- `side_hud_trigger_aspect`, `side_hud_width`, `side_hud_width_ratio`
+- `side_hud_left_margin`, `side_hud_top_margin`
+- `paddle_bottom_padding_ratio`, `paddle_bottom_padding_min`
 - `physics_substep_radius_factor`, `physics_max_substeps`
 - `collision_push_out_min`, `speed_interval_min_seconds`
 - `playfield_glow_padding`, `playfield_frame_padding`, `combo_glow_padding`, `combo_glow_max_alpha`
 - `high_score_save_key`
+
+Layout strategy helpers are implemented in `scripts/glo_blocks/layout/PlayLayoutSystem.gd` and are designed to be portable to ArcadeCore:
+
+- `SQUARE_CENTERED`: centered square play area that feels consistent in portrait and landscape.
+- `ROTATE_TO_LANDSCAPE`: rotates gameplay 90 degrees in wide viewports (Starfall-style).
 
 Pattern knobs live in `resources/glo_blocks/config/PatternConfig.tres`:
 

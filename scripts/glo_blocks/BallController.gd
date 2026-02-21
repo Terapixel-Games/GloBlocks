@@ -13,23 +13,29 @@ var _play_bounds: Rect2
 var _paddle: PaddleController
 var _block_grid: BlockGrid
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var _scale: float = 1.0
 
 var velocity: Vector2 = Vector2.ZERO
 var _current_speed: float = 0.0
 var _speed_timer: float = 0.0
 var _radius: float = 12.0
+var _base_speed_scaled: float = 0.0
+var _max_speed_cap_scaled: float = 0.0
 var _active: bool = false
 var _combo_intensity: float = 0.0
 
 func _ready() -> void:
 	_rng.randomize()
 
-func configure(config: GameplayConfig, play_bounds: Rect2, paddle: PaddleController, block_grid: BlockGrid) -> void:
+func configure(config: GameplayConfig, play_bounds: Rect2, paddle: PaddleController, block_grid: BlockGrid, play_scale: float = 1.0) -> void:
 	_config = config
 	_play_bounds = play_bounds
 	_paddle = paddle
 	_block_grid = block_grid
-	_radius = _config.ball_radius
+	_scale = max(0.3, play_scale)
+	_radius = _config.ball_radius * _scale
+	_base_speed_scaled = _config.base_ball_speed * _scale
+	_max_speed_cap_scaled = _config.max_speed_cap * _scale
 	_update_visual_size()
 	_setup_visual_materials()
 
@@ -40,7 +46,7 @@ func reset_ball(spawn_at: Vector2) -> void:
 	if _config == null:
 		return
 	global_position = spawn_at
-	_current_speed = _config.base_ball_speed
+	_current_speed = _base_speed_scaled
 	_speed_timer = 0.0
 	var x_dir: float = -1.0 if _rng.randi() % 2 == 0 else 1.0
 	var launch_angle_rad: float = deg_to_rad(_config.launch_angle_degrees)
@@ -136,7 +142,7 @@ func _tick_speed(delta: float) -> void:
 	_speed_timer += delta
 	while _speed_timer >= interval:
 		_speed_timer -= interval
-		_current_speed = min(_current_speed * (1.0 + _config.speed_increase_percent), _config.max_speed_cap)
+		_current_speed = min(_current_speed * (1.0 + _config.speed_increase_percent), _max_speed_cap_scaled)
 		if velocity.length_squared() > 0.0001:
 			velocity = velocity.normalized() * _current_speed
 
@@ -171,7 +177,7 @@ func _update_visual_size() -> void:
 	visual.size = Vector2(diameter, diameter)
 	visual.position = -visual.size * 0.5
 	visual.pivot_offset = visual.size * 0.5
-	glow.size = Vector2(diameter + 22.0, diameter + 22.0)
+	glow.size = Vector2(diameter + (22.0 * _scale), diameter + (22.0 * _scale))
 	glow.position = -glow.size * 0.5
 	glow.pivot_offset = glow.size * 0.5
 

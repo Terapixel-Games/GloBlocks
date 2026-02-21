@@ -1,7 +1,7 @@
-[gd_resource type="Theme" load_steps=8 format=3]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://cnuvxibq8boq2"]
 
-[ext_resource type="FontFile" path="res://assets/fonts/SpaceGrotesk.ttf" id="1"]
-[ext_resource type="FontFile" path="res://assets/fonts/Chivo.ttf" id="2"]
+[ext_resource type="FontFile" uid="uid://cl1e226wxm50" path="res://assets/fonts/SpaceGrotesk.ttf" id="1"]
+[ext_resource type="FontFile" uid="uid://bf4ise6m3endr" path="res://assets/fonts/Chivo.ttf" id="2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
 bg_color = Color(0.03, 0.08, 0.17, 0.78)
