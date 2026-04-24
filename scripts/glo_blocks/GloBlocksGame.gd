@@ -103,7 +103,8 @@ func _start_run() -> void:
 	_combo_manager.reset()
 	_layout_scene(true)
 	_spawn_ball()
-	AdManager.on_run_started()
+	if AdManager.has_method("on_run_started"):
+		AdManager.on_run_started()
 
 func _layout_scene(rebuild_grid: bool) -> void:
 	var viewport_size: Vector2 = get_viewport_rect().size
@@ -231,7 +232,8 @@ func _end_run() -> void:
 	_score_manager.finalize_run()
 	hud_top_row.visible = false
 	game_over_overlay.show_results(_score_manager.score, _score_manager.best)
-	AdManager.on_run_finished()
+	if AdManager.has_method("on_run_finished"):
+		AdManager.on_run_finished()
 
 func _on_score_changed(score: int) -> void:
 	score_value.text = str(score)

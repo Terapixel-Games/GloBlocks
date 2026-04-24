@@ -18,9 +18,13 @@ config/icon="res://icon.svg"
 [autoload]
 
 SaveStore="*res://scripts/glo_blocks/SaveStore.gd"
-AdManager="*res://scripts/glo_blocks/ads/AdManager.gd"
+AdManager="*res://addons/arcade_core/AdManager.gd"
 Typography="*res://scripts/glo_blocks/Typography.gd"
 
+SaveManager="*res://addons/arcade_core/SaveManager.gd"
+StreakManager="*res://addons/arcade_core/StreakManager.gd"
+AudioManager="*res://addons/arcade_core/AudioManager.gd"
+Fx="*res://addons/arcade_core/Fx.gd"
 [debug]
 
 gdscript/warnings/treat_warnings_as_errors=false
@@ -33,7 +37,11 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=4
 
+window/size/viewport_width=1080
+window/size/viewport_height=1920
+window/size/resizable=true
 [rendering]
 
 renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.04, 0.08, 0.2, 1)

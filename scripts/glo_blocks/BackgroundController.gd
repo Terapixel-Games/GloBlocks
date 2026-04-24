@@ -26,7 +26,8 @@ enum BaseBackgroundMode {
 @export var debug_overlay_enabled: bool = true
 @export_range(0.0, 30.0, 0.1) var debug_auto_cycle_seconds: float = 0.0
 @export var base_background_mode: BaseBackgroundMode = BaseBackgroundMode.COLOR
-@export var base_background_color: Color = Color(0.02, 0.05, 0.1, 1.0)
+@export var base_background_color: Color = Color(1.0, 1.0, 1.0, 1.0)
+@export var effect_controls_base_color: bool = false
 @export var base_background_image: Texture2D
 @export_range(0.0, 1.0, 0.01) var fx_overlay_alpha: float = 1.0
 
@@ -216,7 +217,10 @@ func _apply_effect_profile() -> void:
 	_effect_tint_base = profile.get("tint_base", _effect_tint_base)
 	_effect_tint_hype = profile.get("tint_hype", _effect_tint_hype)
 	if base_background_mode == BaseBackgroundMode.COLOR:
-		base_layer.modulate = profile.get("bg_color", base_background_color)
+		if effect_controls_base_color:
+			base_layer.modulate = profile.get("bg_color", base_background_color)
+		else:
+			base_layer.modulate = base_background_color
 
 func _effect_tint_for(index: int) -> Dictionary:
 	match index:
@@ -495,8 +499,25 @@ func _apply_base_background() -> void:
 func _get_solid_texture() -> Texture2D:
 	if _solid_texture != null:
 		return _solid_texture
-	var image := Image.create(2, 2, false, Image.FORMAT_RGBA8)
-	image.fill(Color(1.0, 1.0, 1.0, 1.0))
+	var width: int = 8
+	var height: int = 128
+	var image := Image.create(width, height, false, Image.FORMAT_RGBA8)
+	var top := Color(0.08, 0.18, 0.36, 1.0)
+	var mid := Color(0.06, 0.14, 0.32, 1.0)
+	var bottom := Color(0.03, 0.06, 0.18, 1.0)
+	for y in range(height):
+		var v: float = float(y) / max(1.0, float(height - 1))
+		var row_color: Color
+		if v < 0.55:
+			row_color = top.lerp(mid, v / 0.55)
+		else:
+			row_color = mid.lerp(bottom, (v - 0.55) / 0.45)
+		for x in range(width):
+			var u: float = float(x) / max(1.0, float(width - 1))
+			var side_boost: float = 1.0 - abs((u * 2.0) - 1.0)
+			var tint_mix: float = pow(side_boost, 1.5) * 0.18
+			var tinted: Color = row_color.lerp(Color(0.12, 0.14, 0.44, 1.0), tint_mix)
+			image.set_pixel(x, y, tinted)
 	_solid_texture = ImageTexture.create_from_image(image)
 	return _solid_texture
 

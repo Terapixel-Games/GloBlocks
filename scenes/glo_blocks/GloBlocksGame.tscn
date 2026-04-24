@@ -21,11 +21,11 @@ fx_overlay_alpha = 1.0
 
 [node name="PlayfieldGlow" type="ColorRect" parent="PlayfieldRig/Playfield"]
 mouse_filter = 2
-color = Color(0.48, 0.74, 1, 0.08)
+color = Color(0.34, 0.88, 1, 0.12)
 
 [node name="PlayfieldFrame" type="ColorRect" parent="PlayfieldRig/Playfield"]
 mouse_filter = 2
-color = Color(0.18, 0.28, 0.52, 0.22)
+color = Color(0.12, 0.26, 0.46, 0.28)
 
 [node name="ComboGlow" type="ColorRect" parent="PlayfieldRig/Playfield"]
 mouse_filter = 2
@@ -108,15 +108,15 @@ anchor_right = 0.82
 anchor_bottom = 0.29
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.08, 0.14, 0.27, 0.28)
+color = Color(0.08, 0.12, 0.2, 0.4)
 script = ExtResource("8")
-blur_radius = 6.0
-tint = Color(0.08, 0.14, 0.27, 0.28)
-edge = Color(0.93, 0.97, 1, 0.32)
-corner_radius = 0.11
-edge_width = 1.05
-warp_intensity = 0.1
-chromatic_strength = 0.2
+blur_radius = 7.5
+tint = Color(0.08, 0.12, 0.2, 0.4)
+edge = Color(0.8, 0.96, 1, 0.44)
+corner_radius = 0.13
+edge_width = 1.2
+warp_intensity = 0.08
+chromatic_strength = 0.14
 
 [node name="VBox" type="VBoxContainer" parent="GameOverOverlay/Panel"]
 layout_mode = 0
@@ -130,7 +130,7 @@ alignment = 1
 [node name="Title" type="Label" parent="GameOverOverlay/Panel/VBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Run Over"
+text = "Shard Run Over"
 horizontal_alignment = 1
 
 [node name="Score" type="Label" parent="GameOverOverlay/Panel/VBox"]
@@ -148,5 +148,5 @@ horizontal_alignment = 1
 [node name="Retry" type="Label" parent="GameOverOverlay/Panel/VBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Tap to Retry"
+text = "Tap to Run Again"
 horizontal_alignment = 1

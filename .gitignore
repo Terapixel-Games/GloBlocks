@@ -1,4 +1,12 @@
-.godot/
+﻿.godot/
 .import/
 build/
 configs/ads/AdUnits.local.json
+/configs/AdMob.local.txt
+
+# Local verification/capture output
+tmp/
+/tmp/
+*.tmp
+changes.patch
+

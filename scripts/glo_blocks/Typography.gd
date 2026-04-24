@@ -4,15 +4,15 @@ const REFERENCE_HEIGHT: float = 2532.0
 const GLOBAL_TEXT_SCALE: float = 2.12
 const MIN_SCALE_FACTOR: float = 0.35
 const MAX_SCALE_FACTOR: float = 2.30
-const PRIMARY_TEXT: Color = Color8(242, 244, 255, 255)
-const SECONDARY_TEXT: Color = Color8(242, 244, 255, 166)
-const SHADOW_TEXT: Color = Color(0.02, 0.04, 0.12, 0.82)
+const PRIMARY_TEXT: Color = Color8(255, 247, 233, 255)
+const SECONDARY_TEXT: Color = Color8(214, 245, 255, 194)
+const SHADOW_TEXT: Color = Color(0.02, 0.05, 0.11, 0.88)
 
 const SIZE_HUD_CAPTION: float = 18.0
 const SIZE_HUD_VALUE: float = 56.0
-const SIZE_OVERLAY_TITLE: float = 22.0
-const SIZE_OVERLAY_SCORE: float = 30.0
-const SIZE_OVERLAY_BODY: float = 13.0
+const SIZE_OVERLAY_TITLE: float = 24.0
+const SIZE_OVERLAY_SCORE: float = 34.0
+const SIZE_OVERLAY_BODY: float = 15.0
 
 const WEIGHT_REGULAR: int = 400
 const WEIGHT_MEDIUM: int = 500
