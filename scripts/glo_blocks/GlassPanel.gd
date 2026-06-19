@@ -1,5 +1,4 @@
 extends ColorRect
-class_name GlassPanel
 
 @export var blur_radius: float = 8.0
 @export var tint: Color = Color(0.12, 0.18, 0.32, 0.52)
